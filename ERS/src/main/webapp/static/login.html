@@ -10,22 +10,47 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: teal">
         <a class="navbar-brand" href="index.html">Employee Reimbursement System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
     </nav>
     <br>
-    <form class="container">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" placeholder="Enter username">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password">
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+    <form class="container" onsubmit="return false;">
+    	<div class="row justify-content-center">
+    		<div class="col-4">
+		      <div class="form-group">
+		        <label for="username">Username</label>
+		        <input type="text" class="form-control" id="username" placeholder="Enter username">
+		      </div>
+		      <div class="form-group">
+		        <label for="password">Password</label>
+		        <input type="password" class="form-control" id="password" placeholder="Enter password">
+		      </div>
+		      <button class="btn btn-primary" onclick="login()">Log In</button>
+		    </div>
+	     </div>
     </form>
+    <script>
+	    async function login(e) {
+			let unInput = document.getElementById("username");
+			let pwInput = document.getElementById("password");
+	
+			try {
+				let response = await fetch("http://localhost:8080/ERS/login", {
+					method: 'POST',
+					credentials: 'include',
+					body: JSON.stringify({
+						username: unInput.value,
+						password: pwInput.value
+					})
+				});
+	
+				sessionStorage.setItem("currentUser", JSON.stringify(await response.json()));
+				window.location.href = "http://localhost:8080/ERS/profile";
+			} catch(error) {
+				console.log(error);
+				alert("Could not log in");
+			}
+		}
+    </script>
     <br>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
         <p>&copy; 2020 Jayson Lutrario</p>

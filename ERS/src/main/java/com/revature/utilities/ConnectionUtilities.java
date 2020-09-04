@@ -32,8 +32,9 @@ public class ConnectionUtilities {
 		String password = "password";
 		
 		try {
+			Class.forName("org.postgresql.Driver");
 			conn = DriverManager.getConnection(url, username, password);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			System.out.println("FAILED TO GET CONNECTION");
 			return null;

@@ -7,15 +7,45 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: teal">
+<body onload="getUser()">
+    <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color: teal">
         <a class="navbar-brand" href="index.html">Employee Reimbursement System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
+        <form action="/ERS/logout" method="POST" onsubmit="logout()">
+        	<button class="btn btn-outline-light btn-primary my-2 my-sm-0" type="submit">Log Out</button>
+		</form>
     </nav>
+    <div class="text-center">
+        <h1 id="hello"></h1>
+    </div>
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border m-5 text-primary" style="width: 8rem; height: 8rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <script>
+        function checkUser() {
+            let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+            if (!currentUser) {
+                window.location.href = "http://localhost8080/ERS/";
+            }
+        }
+        checkUser();
 
-    
+        function getUser() {
+            let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+
+            let spinner = document.getElementById("spinner");
+            spinner.parentNode.removeChild(spinner);
+
+            let hello = document.getElementById("hello");
+            hello.innerHTML = "Hello " + currentUser.firstname + " " + currentUser.lastname;
+        }
+
+    	function logout() {
+    		sessionStorage.removeItem("currentUser");
+    	}
+    </script>
 
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
         <p>&copy; 2020 Jayson Lutrario</p>
