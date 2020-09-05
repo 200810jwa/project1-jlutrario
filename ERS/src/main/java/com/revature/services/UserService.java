@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.revature.dao.UserDAO;
 import com.revature.models.User;
 import com.revature.templates.LoginTemplate;
+import com.revature.templates.RegisterTemplate;
 
 public class UserService {
 
@@ -25,9 +26,8 @@ public class UserService {
 		return null;
 	}
 	
-	public User register(String username, String password, String firstname, String lastname, 
-			String email, int user_role_id) {
-		User u = new User(0, username, Integer.toString(password.hashCode()), firstname, lastname, email, user_role_id);
+	public User register(RegisterTemplate rt) {
+		User u = new User(0, rt.getUsername(), Integer.toString(rt.getPassword().hashCode()), rt.getFirstname(), rt.getLastname(), rt.getEmail(), rt.getUser_role_id());
 		
 		int new_id = userDAO.insert(u);
 		

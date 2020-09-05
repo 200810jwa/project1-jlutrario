@@ -161,7 +161,7 @@ public class UserDAO implements IUserDAO {
 		try (Connection conn = ConnectionUtilities.getConnection()) {
 
 			String sql = "INSERT INTO project1.users (username, password, firstname, lastname, email, user_role_id) " + 
-			"VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING project1.users.id";
+			"VALUES (?, ?, ?, ?, ?, ?) RETURNING project1.users.id";
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 
