@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Reimbursement System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: teal">
+        <a class="navbar-brand" href="http://localhost:8080/ERS/home">Employee Reimbursement System</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
+    </nav>
+    <br>
+    <h2 class="container text-center">New Reimbursement Request</h2>
+    <br>
+    <form class="container" onsubmit="return false">
+      <div class="row justify-content-center">
+        <div class="form-group col-2">
+          <label for="amount">Amount ($USD)</label>
+          <input type="text" class="form-control" id="amount" placeholder="Amount">
+        </div>
+        <div class="col-2">
+          <label for="type">Type</label>
+          <select class="form-control text-dark" id="type">
+            <option value="1">Lodging</option>
+            <option value="2">Travel</option>
+            <option value="3">Food</option>
+            <option value="4">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-4">
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description"></textarea>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="form-group col-4">
+          <br>
+          <label for="receipt">Upload Receipt</label>
+          <input type="file" class="form-control-file" id="receipt">
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <button type="submit" class="btn btn-primary" onclick="checkForm()" id="submit">Submit</button>
+      </div>
+    </form>
+    <br>
+    <script>
+      function checkForm() {
+        let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        let userID = currentUser.id.value;
+        let amInput = document.getElementById("amount").value;
+        let dsInput = document.getElementById("description").value;
+
+        if (amInput == null || dsInput == null || amInput == 0 || userID == 0 ||
+            amInput == "" || dsInput == "" || currentUser == null) {
+            alert("Please fill in all fields");
+        } else {
+            create();
+        }
+      }
+      async function create(e) {
+        let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+        let userID = currentUser.id;
+        let statusID = 1;   // pending
+        let amInput = document.getElementById("amount");
+        let tp = document.getElementById("type");
+        let tpInput = tp.options[tp.selectedIndex].value;
+        let dsInput = document.getElementById("description");
+
+        try {
+          let response = await fetch("http://localhost:8080/ERS/create/", {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+              amount: amInput.value,
+              description: dsInput.value,
+              author: userID,
+              status_id: statusID,
+              type_id: tpInput
+            })
+          });
+	
+				  //sessionStorage.setItem("reimbursement", JSON.stringify(await response.json()));
+          alert("Success! Reimbursement request submitted...");
+				  window.location.href = "http://localhost:8080/ERS/profile";
+
+          } catch(error) {
+            console.log(error);
+            alert("Could not submit reimbursement request");
+          }
+      }
+    </script>
+    <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
+        <p>&copy; 2020 Jayson Lutrario</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

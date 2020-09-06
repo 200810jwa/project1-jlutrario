@@ -9,25 +9,40 @@
 </head>
 <body onload="getUser()">
     <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color: teal">
-        <a class="navbar-brand" href="index.html">Employee Reimbursement System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
+        <a class="navbar-brand" href="http://localhost:8080/ERS/home">Employee Reimbursement System</a>
+        <a class="navbar-text text-white" id="welcome" style="text-decoration: none;"></a>
         <form action="/ERS/logout" method="POST" onsubmit="logout()">
         	<button class="btn btn-outline-light btn-primary my-2 my-sm-0" type="submit">Log Out</button>
 		</form>
     </nav>
-    <div class="text-center">
-        <h1 id="hello"></h1>
-    </div>
     <div id="spinner" class="d-flex justify-content-center">
         <div class="spinner-border m-5 text-primary" style="width: 8rem; height: 8rem;" role="status">
             <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <br>
+    <div class="container text-right">
+        <button class="btn btn-primary" type="button" onclick="newReimbursement()">New Reimbursement</button>
+    </div>
+    <div class="container justify-content-center">
+        <div class="table table-striped">
+            <table>
+                <thead>
+                    <th id="title"></th>
+                </thead>
+                <tbody>
+                    <tr id="firstRow">
+                        <td id="firstCol"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <script>
         function checkUser() {
             let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
             if (!currentUser) {
-                window.location.href = "http://localhost8080/ERS/";
+                window.location.href = "http://localhost:8080/ERS/";
             }
         }
         checkUser();
@@ -38,15 +53,27 @@
             let spinner = document.getElementById("spinner");
             spinner.parentNode.removeChild(spinner);
 
-            let hello = document.getElementById("hello");
-            hello.innerHTML = "Hello " + currentUser.firstname + " " + currentUser.lastname;
+            let welcome = document.getElementById("welcome");
+            welcome.innerHTML = "Welcome " + currentUser.firstname + " " + currentUser.lastname;
+
+            let title = document.getElementById("title");
+            if (currentUser.user_role_id == 1) {
+                title.innerHTML = "Reimbursement Requests";
+
+            } else if (currentUser.user_role_id == 2) {
+                title.innerHTML = "Reimbursement History";
+                document.getElementById("firstCol").innerHTML = "No reimbursements to show."
+            }
+        }
+
+        function newReimbursement() {
+            window.location.href = "http://localhost:8080/ERS/create/";
         }
 
     	function logout() {
     		sessionStorage.removeItem("currentUser");
     	}
     </script>
-
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
         <p>&copy; 2020 Jayson Lutrario</p>
     </footer>

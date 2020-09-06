@@ -133,8 +133,8 @@ public class ReimbursementDAO implements IReimbursementDAO {
 
 	@Override
 	public int insert(Reimbursement r) {
-		String sql = "INSERT INTO project1.reimbursement (amount, submitted, resolved, description, receipt, "
-				+ "author, resolver, status_id, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING project1.reimbursement.id";
+		String sql = "INSERT INTO project1.reimbursement (amount, submitted, description, receipt, "
+				+ "author, resolver, status_id, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING project1.reimbursement.id";
 
 		try (Connection conn = ConnectionUtilities.getConnection()) {
 
@@ -142,13 +142,12 @@ public class ReimbursementDAO implements IReimbursementDAO {
 
 			stmt.setDouble(1, r.getAmount());
 			stmt.setTimestamp(2, Timestamp.valueOf(r.getSubmitted()));
-			stmt.setTimestamp(3, Timestamp.valueOf(r.getResolved()));
-			stmt.setString(4, r.getDescription());
-			stmt.setBytes(5, r.getReceipt());
-			stmt.setInt(6, r.getAuthor());
-			stmt.setInt(7, r.getResolver());
-			stmt.setInt(8, r.getStatus_id());
-			stmt.setInt(9, r.getType_id());
+			stmt.setString(3, r.getDescription());
+			stmt.setBytes(4, r.getReceipt());
+			stmt.setInt(5, r.getAuthor());
+			stmt.setInt(6, r.getResolver());
+			stmt.setInt(7, r.getStatus_id());
+			stmt.setInt(8, r.getType_id());
 
 			ResultSet rs;
 			if ((rs = stmt.executeQuery()) != null) {
