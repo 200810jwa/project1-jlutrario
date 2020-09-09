@@ -10,28 +10,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.revature.models.Reimbursement;
-import com.revature.services.RStatusService;
 import com.revature.services.RTypeService;
 import com.revature.services.ReimbursementService;
+import com.revature.services.UserService;
 
 /**
- * Servlet implementation class MyReimbursementsServlet
+ * Servlet implementation class PendingReimbsServlet
  */
-@WebServlet(urlPatterns = {"/myreimbs"})
-public class MyReimbursementsServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/pendingreimbs"})
+public class PendingReimbsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	private static ReimbursementService rs = new ReimbursementService();
-	private static RStatusService rStatServ = new RStatusService();
 	private static RTypeService rTypeServ = new RTypeService();
+	private static UserService userServ = new UserService();
 	
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MyReimbursementsServlet() {
+    public PendingReimbsServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,10 +41,7 @@ public class MyReimbursementsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
-		
-		List<Reimbursement> reimbursements = rs.getReimbursements(username);
-		
+		List<Reimbursement> reimbursements = rs.getPending();
 		PrintWriter writer = response.getWriter();
 		
 		if (reimbursements == null) {
@@ -55,8 +53,8 @@ public class MyReimbursementsServlet extends HttpServlet {
 						json.put("id", reimbursements.get(i).getId());
 						json.put("amount", reimbursements.get(i).getAmount());
 						json.put("submitted", reimbursements.get(i).getSubmitted().toString());
-						json.put("status", rStatServ.getStatus(reimbursements.get(i).getStatus_id()));
 						json.put("type", rTypeServ.getType(reimbursements.get(i).getType_id()));
+						json.put("author", userServ.authorName(reimbursements.get(i).getAuthor()));
 		                arr.put(json);
 			}
 			

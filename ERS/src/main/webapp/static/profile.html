@@ -27,13 +27,14 @@
     <div class="container justify-content-center">
         <div class="table table-striped">
             <h3 id="title"></h3>
-            <table id="table">
+            <table class="table-bordered" id="table">
                 <thead>
                     <th>ID</th>
                     <th>Amount</th>
                     <th>Submitted</th>
                     <th>Type</th>
-                    <th>Status</th>
+                    <th id="status">Status</th>
+                    <th>Details</th>
                 </thead>
                 <tbody id="data">
                     <tr id="firstRow">
@@ -43,6 +44,7 @@
             </table>
         </div>
     </div>
+    <br>
     <script>
         function checkUser() {
             let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -65,11 +67,24 @@
             let title = document.getElementById("title");
             if (currentUser.user_role_id == 1) {
                 title.innerHTML = "Reimbursement Requests";
-
+                let status = document.getElementById("status").innerHTML = "Author";
+                getRequests();
             } else if (currentUser.user_role_id == 2) {
                 title.innerHTML = "Reimbursement History";
                 getHistory();
             }
+        }
+
+        async function getRequests(e) {
+            try {
+                let response = await fetch("http://localhost:8080/ERS/pendingreimbs");
+
+                sessionStorage.setItem("requests", JSON.stringify(await response.json()));
+
+            } catch(error) {
+                console.log(error);
+            }
+            populateReqs();
         }
 
         async function getHistory(e) {
@@ -84,28 +99,65 @@
             } catch(error) {
                 console.log(error);
             }
-            populate();
+            populateHist();
         }
 
-        function populate() {
+        function populateReqs() {
+            let requests = JSON.parse(sessionStorage.getItem("requests"));
+
+            if (requests != null) {
+                let def = document.getElementById("firstRow");
+                def.parentNode.removeChild(def);
+
+                let tbody = document.getElementById("data");
+                for (let i = 0; i < requests.length; i++) {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + requests[i].id + '</td>' +
+                        '<td>$' + requests[i].amount + '</td>' +
+                        '<td>' + requests[i].submitted.substring(0,10) + '</td>' +
+                        '<td>' + requests[i].type + '</td>' +
+                        '<td>' + requests[i].author + '</td>' +
+                        '<td><button class="btn btn-link" type="button" onclick="getDetails(' + 
+                        requests[i].id + ')">View</button></td>';
+                    tbody.appendChild(tr);
+                }
+            } else {
+                document.getElementById("firstCol").innerHTML = "No requests found.";
+            }
+        }
+
+        function populateHist() {
             let reimbursements = JSON.parse(sessionStorage.getItem("reimbursements"));
 
             if (reimbursements != null) {
                 let def = document.getElementById("firstRow");
                 def.parentNode.removeChild(def);
-                console.log(reimbursements.length);
+
                 let tbody = document.getElementById("data");
                 for(let i = 0; i < reimbursements.length; i++) {
                     let tr = document.createElement('tr');
                     tr.innerHTML = '<td>' + reimbursements[i].id + '</td>' + 
                         '<td>$' + reimbursements[i].amount + '</td>' +
-                        '<td>' + reimbursements[i].submitted + '</td>' + 
+                        '<td>' + reimbursements[i].submitted.substring(0,10) + '</td>' + 
                         '<td>' + reimbursements[i].type + '</td>' + 
-                        '<td>' + reimbursements[i].status + '</td>';
+                        '<td>' + reimbursements[i].status + '</td>' +
+                        '<td><button class="btn btn-link" type="button" onclick="getDetails(' + 
+                        reimbursements[i].id + ')">View</button></td>';
                     tbody.appendChild(tr);
                 }
             } else {
                 document.getElementById("firstCol").innerHTML = "No reimbursements found.";
+            }
+        }
+
+        async function getDetails(id) {
+            try {
+                let response = await fetch("http://localhost:8080/ERS/view?id=" + id);
+
+                sessionStorage.setItem("currReimb", JSON.stringify(await response.json()));
+                window.location.href = "http://localhost:8080/ERS/view";
+            } catch(error) {
+                console.log(error);
             }
         }
 

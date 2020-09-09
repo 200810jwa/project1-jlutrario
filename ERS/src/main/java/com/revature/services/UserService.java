@@ -39,4 +39,13 @@ public class UserService {
 		
 		return u;
 	}
+	
+	public String authorName(int id) {
+		User u = userDAO.findByID(id);
+		 if (u == null) {
+			 log.info("Failed to find user.");
+			 return null;
+		 }
+		 return u.getFirstname() + " " + u.getLastname();
+	}
 }

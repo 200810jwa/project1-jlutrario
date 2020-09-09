@@ -3,6 +3,7 @@ package com.revature.services;
 import org.apache.log4j.Logger;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.dao.ReimbursementDAO;
@@ -40,5 +41,18 @@ public class ReimbursementService {
 			log.info("Could not find user by username.");
 			return null;
 		}
+	}
+	
+	public List<Reimbursement> getPending() {
+		List<Reimbursement> all = reimbursementDAO.findAll();
+		
+		List<Reimbursement> pending = new ArrayList<>();
+		
+		for (Reimbursement r : all) {
+			if (r.getStatus_id() == 1) {
+				pending.add(r);
+			}
+		}
+		return pending;
 	}
 }
