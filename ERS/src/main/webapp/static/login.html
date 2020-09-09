@@ -35,26 +35,26 @@
     </form>
     <script>
 	    async function login(e) {
-			let unInput = document.getElementById("username");
-			let pwInput = document.getElementById("password");
-	
-			try {
-				let response = await fetch("http://localhost:8080/ERS/login", {
-					method: 'POST',
-					credentials: 'include',
-					body: JSON.stringify({
-						username: unInput.value,
-						password: pwInput.value
-					})
-				});
-	
-				sessionStorage.setItem("currentUser", JSON.stringify(await response.json()));
-				window.location.href = "http://localhost:8080/ERS/profile";
-			} catch(error) {
-				console.log(error);
-				alert("Could not log in");
+				let unInput = document.getElementById("username");
+				let pwInput = document.getElementById("password");
+		
+				try {
+					let response = await fetch("http://localhost:8080/ERS/login", {
+						method: 'POST',
+						credentials: 'include',
+						body: JSON.stringify({
+							username: unInput.value,
+							password: pwInput.value
+						})
+					});
+		
+					sessionStorage.setItem("currentUser", JSON.stringify(await response.json()));
+					window.location.href = "http://localhost:8080/ERS/profile";
+				} catch(error) {
+					console.log(error);
+					alert("Could not log in");
+				}
 			}
-		}
     </script>
     <br>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">

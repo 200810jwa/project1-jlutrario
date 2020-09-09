@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     
 </head>
-<body onload="getUser()">
+<body onload="checkUser()">
     <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color: teal">
         <a class="navbar-brand" href="http://localhost:8080/ERS/home">Employee Reimbursement System</a>
         <a class="navbar-text text-white" id="welcome" style="text-decoration: none;"></a>
@@ -26,13 +26,18 @@
     </div>
     <div class="container justify-content-center">
         <div class="table table-striped">
-            <table>
+            <h3 id="title"></h3>
+            <table id="table">
                 <thead>
-                    <th id="title"></th>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Submitted</th>
+                    <th>Type</th>
+                    <th>Status</th>
                 </thead>
-                <tbody>
+                <tbody id="data">
                     <tr id="firstRow">
-                        <td id="firstCol"></td>
+                        <td id="firstCol">Loading...</td>
                     </tr>
                 </tbody>
             </table>
@@ -43,9 +48,10 @@
             let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
             if (!currentUser) {
                 window.location.href = "http://localhost:8080/ERS/";
+            } else {
+                getUser();
             }
         }
-        checkUser();
 
         function getUser() {
             let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -62,7 +68,44 @@
 
             } else if (currentUser.user_role_id == 2) {
                 title.innerHTML = "Reimbursement History";
-                document.getElementById("firstCol").innerHTML = "No reimbursements to show."
+                getHistory();
+            }
+        }
+
+        async function getHistory(e) {
+            let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+            let username = currentUser.username;
+
+            try {
+                let response = await fetch("http://localhost:8080/ERS/myreimbs?username=" + username);
+
+                sessionStorage.setItem("reimbursements", JSON.stringify(await response.json()));
+
+            } catch(error) {
+                console.log(error);
+            }
+            populate();
+        }
+
+        function populate() {
+            let reimbursements = JSON.parse(sessionStorage.getItem("reimbursements"));
+
+            if (reimbursements != null) {
+                let def = document.getElementById("firstRow");
+                def.parentNode.removeChild(def);
+                console.log(reimbursements.length);
+                let tbody = document.getElementById("data");
+                for(let i = 0; i < reimbursements.length; i++) {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + reimbursements[i].id + '</td>' + 
+                        '<td>$' + reimbursements[i].amount + '</td>' +
+                        '<td>' + reimbursements[i].submitted + '</td>' + 
+                        '<td>' + reimbursements[i].type + '</td>' + 
+                        '<td>' + reimbursements[i].status + '</td>';
+                    tbody.appendChild(tr);
+                }
+            } else {
+                document.getElementById("firstCol").innerHTML = "No reimbursements found.";
             }
         }
 
@@ -72,6 +115,7 @@
 
     	function logout() {
     		sessionStorage.removeItem("currentUser");
+            sessionStorage.removeItem("reimbursements");
     	}
     </script>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">

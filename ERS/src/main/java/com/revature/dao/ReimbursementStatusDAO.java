@@ -88,7 +88,7 @@ public class ReimbursementStatusDAO implements IReimbursementStatusDAO {
 			
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				rStat = new ReimbursementStatus();

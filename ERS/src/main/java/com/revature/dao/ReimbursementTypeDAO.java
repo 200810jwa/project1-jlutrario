@@ -52,13 +52,13 @@ public class ReimbursementTypeDAO implements IReimbursementTypeDAO {
 		
 		try (Connection conn = ConnectionUtilities.getConnection()) {
 
-			String sql = "SELECT * FROM project1.reimbursement_type WHERE project1.type.id = ?";
+			String sql = "SELECT * FROM project1.reimbursement_type WHERE project1.reimbursement_type.id = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			
 			stmt.setInt(1, id);
 			
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				t = new ReimbursementType();
@@ -88,7 +88,7 @@ public class ReimbursementTypeDAO implements IReimbursementTypeDAO {
 			
 			stmt.setString(1, type);
 			
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				rt = new ReimbursementType();

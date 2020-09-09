@@ -3,13 +3,18 @@ package com.revature.services;
 import org.apache.log4j.Logger;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import com.revature.dao.ReimbursementDAO;
+import com.revature.dao.UserDAO;
 import com.revature.models.Reimbursement;
+import com.revature.models.User;
 import com.revature.templates.ReimbursementTemplate;
 
 public class ReimbursementService {
 
 	private ReimbursementDAO reimbursementDAO = new ReimbursementDAO();
+	private UserDAO userDAO = new UserDAO();
 	private static Logger log = Logger.getLogger(ReimbursementService.class);
 	
 	public Reimbursement submit(ReimbursementTemplate rt) {
@@ -24,5 +29,16 @@ public class ReimbursementService {
 		r.setId(new_id);
 		
 		return r;
+	}
+	
+	public List<Reimbursement> getReimbursements(String username) {
+		User u = userDAO.findByUsername(username);
+		if (u != null) {
+			List<Reimbursement> reimbursements = reimbursementDAO.findByAuthor(u.getId());
+			return reimbursements;
+		} else {
+			log.info("Could not find user by username.");
+			return null;
+		}
 	}
 }
