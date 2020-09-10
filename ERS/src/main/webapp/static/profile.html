@@ -24,6 +24,15 @@
     <div class="container text-right">
         <button class="btn btn-primary" id="button" type="button" onclick="newReimbursement()">New Reimbursement</button>
     </div>
+
+    <div class="container" id="funcs">
+        <form class="form-inline my-2 my-lg-0" id="form" onsubmit="return false;">
+            <input class="form-control mr-sm-2" type="search" placeholder="Username" id="searchInput">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" onclick="search()">Search</button>
+          </form>
+    </div>
+
+    <br>
     <div class="container justify-content-center">
         <div class="table table-striped">
             <h3 id="title"></h3>
@@ -37,14 +46,12 @@
                     <th>Details</th>
                 </thead>
                 <tbody id="data">
-                    <tr id="firstRow">
-                        <td id="firstCol">Loading...</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <br>
+
     <script>
         function checkUser() {
             let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -73,6 +80,8 @@
                 getRequests();
             } else if (currentUser.user_role_id == 2) {
                 title.innerHTML = "Reimbursement History";
+                let funcs = document.getElementById("funcs");
+                funcs.parentNode.removeChild(funcs);
                 getHistory();
             }
         }
@@ -108,9 +117,6 @@
             let requests = JSON.parse(sessionStorage.getItem("requests"));
 
             if (requests != null) {
-                let def = document.getElementById("firstRow");
-                def.parentNode.removeChild(def);
-
                 let tbody = document.getElementById("data");
                 for (let i = 0; i < requests.length; i++) {
                     let tr = document.createElement('tr');
@@ -121,20 +127,20 @@
                         '<td>' + requests[i].author + '</td>' +
                         '<td><button class="btn btn-link" type="button" onclick="getDetails(' + 
                         requests[i].id + ')">View</button></td>';
+                    tr.setAttribute("class", "request");
                     tbody.appendChild(tr);
                 }
             } else {
-                document.getElementById("firstCol").innerHTML = "No requests found.";
+                let tr = document.createElement('tr');
+                tr.innerHTML = "No requests found.";
             }
         }
 
         function populateHist() {
             let reimbursements = JSON.parse(sessionStorage.getItem("reimbursements"));
+            let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
 
             if (reimbursements != null) {
-                let def = document.getElementById("firstRow");
-                def.parentNode.removeChild(def);
-
                 let tbody = document.getElementById("data");
                 for(let i = 0; i < reimbursements.length; i++) {
                     let tr = document.createElement('tr');
@@ -148,7 +154,8 @@
                     tbody.appendChild(tr);
                 }
             } else {
-                document.getElementById("firstCol").innerHTML = "No reimbursements found.";
+                let tr = document.createElement('tr');
+                tr.innerHTML = "No reimbursements found.";
             }
         }
 
@@ -161,6 +168,54 @@
             } catch(error) {
                 console.log(error);
             }
+        }
+
+        async function search(e) {
+            let username = document.getElementById("searchInput").value;
+
+            try {
+                let response = await fetch("http://localhost:8080/ERS/myreimbs?username=" + username);
+
+                sessionStorage.setItem("reimbursements", JSON.stringify(await response.json()));
+
+            } catch(error) {
+                console.log(error);
+            }
+            document.getElementById("funcs").innerHTML = '<button class="btn btn-primary mr-sm-5" type="button" onclick="goBack()">Back</button>';
+            document.getElementById("title").innerHTML = "Reimbursement History for " + username;
+            let status = document.getElementById("status").innerHTML = "Status";
+            removeElementsByClass("request");
+
+            let reimbursements = JSON.parse(sessionStorage.getItem("reimbursements"));
+            if (reimbursements != null) {
+                let tbody = document.getElementById("data");
+                for(let i = 0; i < reimbursements.length; i++) {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + reimbursements[i].id + '</td>' + 
+                        '<td>$' + reimbursements[i].amount + '</td>' +
+                        '<td>' + reimbursements[i].submitted.substring(0,10) + '</td>' + 
+                        '<td>' + reimbursements[i].type + '</td>' + 
+                        '<td>' + reimbursements[i].status + '</td>' +
+                        '<td><button class="btn btn-link" type="button" onclick="getDetails(' + 
+                        reimbursements[i].id + ')">View</button></td>';
+                    tbody.appendChild(tr);
+                }
+            } else {
+                let tr = document.createElement('tr');
+                tr.innerHTML = "No reimbursements found.";
+            }
+        }
+
+        function removeElementsByClass(className){
+                var elements = document.getElementsByClassName(className);
+                while(elements.length > 0){
+                    elements[0].parentNode.removeChild(elements[0]);
+                }
+            }
+
+        function goBack() {
+            sessionStorage.removeItem("reimbursements");
+            window.location.href = "http://localhost:8080/ERS/profile";
         }
 
         function newReimbursement() {

@@ -1,9 +1,7 @@
 package com.revature.web;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -12,13 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.models.Reimbursement;
-import com.revature.models.User;
 import com.revature.services.ReimbursementService;
-import com.revature.templates.RegisterTemplate;
 import com.revature.templates.ReimbursementTemplate;
 import com.revature.utilities.ResponseUtilities;
 
