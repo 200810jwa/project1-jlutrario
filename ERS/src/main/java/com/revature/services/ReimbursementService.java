@@ -55,4 +55,14 @@ public class ReimbursementService {
 		}
 		return pending;
 	}
+	
+	public Reimbursement getReimbursement(int id) {
+		Reimbursement r = reimbursementDAO.findByID(id);
+		
+		if (r == null) {
+			log.info("Could not find reimbursement.");
+			return null;
+		}
+		return r;
+	}
 }

@@ -1,24 +1,12 @@
 package com.revature.web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.models.Reimbursement;
-import com.revature.services.RStatusService;
-import com.revature.services.ReimbursementService;
-import com.revature.utilities.ResponseUtilities;
 
 /**
  * Servlet implementation class ProfileServlet
@@ -27,10 +15,6 @@ import com.revature.utilities.ResponseUtilities;
 public class ProfileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private static ObjectMapper om = new ObjectMapper();
-	private static ReimbursementService rs = new ReimbursementService();
-	private static RStatusService rStatServ = new RStatusService();
-	
     /**
      * @see HttpServlet#HttpServlet()
      */

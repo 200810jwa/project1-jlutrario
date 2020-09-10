@@ -101,7 +101,7 @@ public class ReimbursementDAO implements IReimbursementDAO {
 
 		try (Connection conn = ConnectionUtilities.getConnection()) {
 
-			String sql = "SELECT * FROM project1.reimbursement WHERE project1.reimbursement.author = ?";
+			String sql = "SELECT * FROM project1.reimbursement WHERE project1.reimbursement.id = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 

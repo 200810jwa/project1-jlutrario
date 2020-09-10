@@ -7,14 +7,132 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: teal">
+<body onload="checkUser()">
+    <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color: teal">
         <a class="navbar-brand" href="http://localhost:8080/ERS/home">Employee Reimbursement System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
+        <a class="navbar-text text-white" id="welcome" style="text-decoration: none;"></a>
+        <form action="/ERS/logout" method="POST" onsubmit="logout()">
+        	<button class="btn btn-outline-light btn-primary my-2 my-sm-0" type="submit">Log Out</button>
+		</form>
     </nav>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border m-5 text-primary" style="width: 8rem; height: 8rem;" role="status">
+          <span class="sr-only">Loading...</span>
+      </div>
+    </div>
     <br>
-    
+    <div class="container text-left">
+      <button class="btn btn-primary" type="button" onclick="goBack()">Back</button>
+    </div>
     <br>
+    <div class="container justify-content-center">
+      <div class="table table-striped">
+        <h3>Reimbursement</h3>
+        <table class="table-bordered" id="table">
+          <tbody>
+            <tr>
+              <td>ID</td>
+              <td id="id"></td>
+            </tr>
+            <tr>
+              <td>Amount</td>
+              <td id="amount"></td>
+            </tr>
+            <tr>
+              <td>Submitted</td>
+              <td id="submitted"></td>
+            </tr>
+            <tr>
+              <td>Resolved</td>
+              <td id="resolved"></td>
+            </tr>
+            <tr>
+              <td>Description</td>
+              <td id="description"></td>
+            </tr>
+            <tr>
+              <td>Author</td>
+              <td id="author"></td>
+            </tr>
+            <tr>
+              <td>Resolver</td>
+              <td id="resolver"></td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td id="status"></td>
+            </tr>
+            <tr>
+              <td>Type</td>
+              <td id="type"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <script>
+      let currReimb = JSON.parse(sessionStorage.getItem("currReimb"));
+      let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+
+      function checkUser() {
+        if (!currentUser) {
+          window.location.href = "http://localhost:8080/ERS/";
+        } else {
+          getUser();
+        }
+      }
+
+      function getUser() {
+        let spinner = document.getElementById("spinner");
+        spinner.parentNode.removeChild(spinner);
+
+        let welcome = document.getElementById("welcome");
+        welcome.innerHTML = "Welcome " + currentUser.firstname + " " + currentUser.lastname;
+
+        populate();
+      }
+
+      function populate() {
+        document.getElementById("id").innerHTML = currReimb.id;
+        document.getElementById("amount").innerHTML = "$" + currReimb.amount;
+        document.getElementById("submitted").innerHTML = currReimb.submitted.substring(0,10);
+        let resolved = document.getElementById("resolved");
+        if (currReimb.resolved != 0) {
+          resolved.innerHTML = currReimb.resolved.substring(0,10);
+        } else {
+          resolved.innerHTML = "N/A";
+        }
+        document.getElementById("description").innerHTML = currReimb.description;
+        document.getElementById("author").innerHTML = currReimb.author;
+        let resolver = document.getElementById("resolver");
+        if (currReimb.resolver != 0) {
+          resolver.innerHTML = currReimb.resolver;
+        } else {
+          resolver.innerHTML = "N/A";
+        }
+        document.getElementById("status").innerHTML = currReimb.status;
+        document.getElementById("type").innerHTML = currReimb.type;
+
+        if (currentUser.user_role_id == 1) {
+          
+        } else if (currentUser.user_role_id == 2) {
+          
+        }
+      }
+
+      function goBack() {
+        sessionStorage.removeItem("currReimb");
+        window.location.href = "http://localhost:8080/ERS/profile";
+      }
+
+      function logout() {
+    		sessionStorage.removeItem("currentUser");
+        sessionStorage.removeItem("reimbursements");
+        sessionStorage.removeItem("requests");
+        sessionStorage.removeItem("currReimb");
+    	}
+    </script>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
         <p>&copy; 2020 Jayson Lutrario</p>
     </footer>

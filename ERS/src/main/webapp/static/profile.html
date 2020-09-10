@@ -22,7 +22,7 @@
     </div>
     <br>
     <div class="container text-right">
-        <button class="btn btn-primary" type="button" onclick="newReimbursement()">New Reimbursement</button>
+        <button class="btn btn-primary" id="button" type="button" onclick="newReimbursement()">New Reimbursement</button>
     </div>
     <div class="container justify-content-center">
         <div class="table table-striped">
@@ -68,6 +68,8 @@
             if (currentUser.user_role_id == 1) {
                 title.innerHTML = "Reimbursement Requests";
                 let status = document.getElementById("status").innerHTML = "Author";
+                let button = document.getElementById("button");
+                button.parentNode.removeChild(button);
                 getRequests();
             } else if (currentUser.user_role_id == 2) {
                 title.innerHTML = "Reimbursement History";
@@ -152,7 +154,7 @@
 
         async function getDetails(id) {
             try {
-                let response = await fetch("http://localhost:8080/ERS/view?id=" + id);
+                let response = await fetch("http://localhost:8080/ERS/getdetails?id=" + id);
 
                 sessionStorage.setItem("currReimb", JSON.stringify(await response.json()));
                 window.location.href = "http://localhost:8080/ERS/view";
@@ -168,6 +170,7 @@
     	function logout() {
     		sessionStorage.removeItem("currentUser");
             sessionStorage.removeItem("reimbursements");
+            sessionStorage.removeItem("requests");
     	}
     </script>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
