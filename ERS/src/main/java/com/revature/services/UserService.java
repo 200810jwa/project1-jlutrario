@@ -2,6 +2,7 @@ package com.revature.services;
 
 import org.apache.log4j.Logger;
 
+import com.revature.dao.IUserDAO;
 import com.revature.dao.UserDAO;
 import com.revature.models.User;
 import com.revature.templates.LoginTemplate;
@@ -9,8 +10,19 @@ import com.revature.templates.RegisterTemplate;
 
 public class UserService {
 
-	private UserDAO userDAO = new UserDAO();
+	private IUserDAO userDAO;
+	//private UserDAO userDAO = new UserDAO();
 	private static Logger log = Logger.getLogger(UserService.class);
+
+	public UserService() {
+		super();
+		this.userDAO = new UserDAO();
+	}
+	
+	public UserService(IUserDAO userDAO) {
+		super();
+		this.userDAO = userDAO;
+	}
 	
 	public User login(LoginTemplate lt) {
 		User u = userDAO.findByUsername(lt.getUsername());
@@ -20,6 +32,7 @@ public class UserService {
 			return null;
 		}
 		if (Integer.toString(lt.getPassword().hashCode()).equals(u.getPassword())) {
+			log.info("Logged in a user");
 			return u;
 		}
 		log.info("Login attempt failed: incorrect password.");

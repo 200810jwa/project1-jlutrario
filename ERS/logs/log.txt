@@ -1,0 +1,14 @@
+2020-09-10 12:43:45 INFO  UserService:35 - Logged in a user
+2020-09-10 12:45:27 INFO  UserService:35 - Logged in a user
+2020-09-10 12:45:38 INFO  UserService:38 - Login attempt failed: incorrect password.
+2020-09-10 12:45:55 INFO  UserService:38 - Login attempt failed: incorrect password.
+2020-09-10 12:46:02 INFO  UserService:38 - Login attempt failed: incorrect password.
+2020-09-10 12:46:02 INFO  UserService:35 - Logged in a user
+2020-09-10 12:57:05 INFO  UserService:48 - Failed to register new user.
+2020-09-10 12:57:54 INFO  UserService:48 - Failed to register new user.
+2020-09-10 13:04:45 INFO  UserService:38 - Login attempt failed: incorrect password.
+2020-09-10 13:04:45 INFO  UserService:31 - Login attempt failed: username not found.
+2020-09-10 13:04:45 INFO  UserService:35 - Logged in a user
+2020-09-10 13:06:22 INFO  UserService:38 - Login attempt failed: incorrect password.
+2020-09-10 13:06:22 INFO  UserService:31 - Login attempt failed: username not found.
+2020-09-10 13:06:22 INFO  UserService:35 - Logged in a user

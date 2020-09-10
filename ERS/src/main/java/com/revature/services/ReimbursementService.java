@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revature.dao.IReimbursementDAO;
 import com.revature.dao.ReimbursementDAO;
 import com.revature.dao.UserDAO;
 import com.revature.models.Reimbursement;
@@ -14,9 +15,20 @@ import com.revature.templates.ReimbursementTemplate;
 
 public class ReimbursementService {
 
-	private ReimbursementDAO reimbursementDAO = new ReimbursementDAO();
+	private IReimbursementDAO reimbursementDAO;
+	//private ReimbursementDAO reimbursementDAO = new ReimbursementDAO();
 	private UserDAO userDAO = new UserDAO();
 	private static Logger log = Logger.getLogger(ReimbursementService.class);
+	
+	public ReimbursementService() {
+		super();
+		this.reimbursementDAO = new ReimbursementDAO();
+	}
+	
+	public ReimbursementService(IReimbursementDAO reimbursementDAO) {
+		super();
+		this.reimbursementDAO = reimbursementDAO;
+	}
 	
 	public Reimbursement submit(ReimbursementTemplate rt) {
 		Reimbursement r = new Reimbursement(0, rt.getAmount(), LocalDateTime.now(), null, rt.getDescription(), 
@@ -72,6 +84,13 @@ public class ReimbursementService {
 		r.setResolved(LocalDateTime.now());
 		r.setResolver(resId);
 		r.setStatus_id(status);
+		
+		if (status == 2) {
+			log.info("Reimbursement approved.");
+		}
+		if (status == 3) {
+			log.info("Reimbursement denied.");
+		}
 		
 		return reimbursementDAO.update(r);
 	}
