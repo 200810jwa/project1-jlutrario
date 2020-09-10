@@ -65,4 +65,14 @@ public class ReimbursementService {
 		}
 		return r;
 	}
+	
+	public boolean updateStatus(int reimbId, int resId, int status) {
+		Reimbursement r = reimbursementDAO.findByID(reimbId);
+		
+		r.setResolved(LocalDateTime.now());
+		r.setResolver(resId);
+		r.setStatus_id(status);
+		
+		return reimbursementDAO.update(r);
+	}
 }

@@ -21,49 +21,57 @@
       </div>
     </div>
     <br>
-    <div class="container text-left">
-      <button class="btn btn-primary" type="button" onclick="goBack()">Back</button>
+    <div class="container">
+      <div class="text-left">
+        <button class="btn btn-primary" type="button" onclick="goBack()">Back</button>
+      </div>
     </div>
     <br>
-    <div class="container justify-content-center">
+    <div class="container align-items-center">
       <div class="table table-striped">
-        <h3>Reimbursement</h3>
+        <h3>Reimbursement<small>
+          <span id="buttons">
+            <button class="btn btn-success" type="button" onclick="approve()">Approve</button>
+            <button class="btn btn-danger" type="button" onclick="deny()">Deny</button>
+          </span>
+        </small></h3>
+        <small></small>
         <table class="table-bordered" id="table">
           <tbody>
             <tr>
-              <td>ID</td>
+              <td style="font-weight: bold;">ID</td>
               <td id="id"></td>
             </tr>
             <tr>
-              <td>Amount</td>
+              <td style="font-weight: bold;">Amount</td>
               <td id="amount"></td>
             </tr>
             <tr>
-              <td>Submitted</td>
+              <td style="font-weight: bold;">Submitted</td>
               <td id="submitted"></td>
             </tr>
             <tr>
-              <td>Resolved</td>
+              <td style="font-weight: bold;">Resolved</td>
               <td id="resolved"></td>
             </tr>
             <tr>
-              <td>Description</td>
+              <td style="font-weight: bold;">Description</td>
               <td id="description"></td>
             </tr>
             <tr>
-              <td>Author</td>
+              <td style="font-weight: bold;">Author</td>
               <td id="author"></td>
             </tr>
             <tr>
-              <td>Resolver</td>
+              <td style="font-weight: bold;">Resolver</td>
               <td id="resolver"></td>
             </tr>
             <tr>
-              <td>Status</td>
+              <td style="font-weight: bold;">Status</td>
               <td id="status"></td>
             </tr>
             <tr>
-              <td>Type</td>
+              <td style="font-weight: bold;">Type</td>
               <td id="type"></td>
             </tr>
           </tbody>
@@ -79,6 +87,10 @@
         if (!currentUser) {
           window.location.href = "http://localhost:8080/ERS/";
         } else {
+          if (currentUser.user_role_id == 2 || currReimb.status != "Pending") {
+            let buttons = document.getElementById("buttons");
+            buttons.parentNode.removeChild(buttons);
+        }
           getUser();
         }
       }
@@ -113,12 +125,26 @@
         }
         document.getElementById("status").innerHTML = currReimb.status;
         document.getElementById("type").innerHTML = currReimb.type;
+      }
 
-        if (currentUser.user_role_id == 1) {
-          
-        } else if (currentUser.user_role_id == 2) {
-          
+      async function approve() {
+        try {
+          let response = await fetch("http://localhost:8080/ERS/changestatus?rid=" + currReimb.id + "&uid=" + currentUser.id + "&status=" + 2);
+          alert("Successfully approved reimbursement");
+        } catch(error) {
+          console.log(error);
         }
+        window.location.href = "http://localhost:8080/ERS/profile";
+      }
+
+      async function deny() {
+        try {
+          let response = await fetch("http://localhost:8080/ERS/changestatus?rid=" + currReimb.id + "&uid=" + currentUser.id + "&status=" + 3);
+          alert("Successfully denied reimbursement");
+        } catch(error) {
+          console.log(error);
+        }
+        window.location.href = "http://localhost:8080/ERS/profile";
       }
 
       function goBack() {
