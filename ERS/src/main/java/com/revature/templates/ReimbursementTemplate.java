@@ -1,11 +1,10 @@
 package com.revature.templates;
 
-import java.util.Arrays;
-
 public class ReimbursementTemplate {
 
 	private double amount;
 	private String description;
+	private byte[] receipt;
 	private int author;
 	private int status_id;
 	private int type_id;
@@ -19,6 +18,7 @@ public class ReimbursementTemplate {
 		super();
 		this.amount = amount;
 		this.description = description;
+		this.receipt = receipt;
 		this.author = author;
 		this.status_id = status_id;
 		this.type_id = type_id;
@@ -40,6 +40,14 @@ public class ReimbursementTemplate {
 		this.description = description;
 	}
 
+	public byte[] getReceipt() {
+		return receipt;
+	}
+
+	public void setReceipt(byte[] receipt) {
+		this.receipt = receipt;
+	}
+	
 	public int getAuthor() {
 		return author;
 	}

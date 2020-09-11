@@ -28,13 +28,13 @@
     </div>
     <br>
     <div class="container align-items-center">
-      <div class="table table-striped">
-        <h3>Reimbursement<small>
-          <span id="buttons">
-            <button class="btn btn-success" type="button" onclick="approve()">Approve</button>
-            <button class="btn btn-danger" type="button" onclick="deny()">Deny</button>
-          </span>
-        </small></h3>
+      <h3>Reimbursement<small>
+        <span id="buttons">
+          <button class="btn btn-success" type="button" onclick="approve()">Approve</button>
+          <button class="btn btn-danger" type="button" onclick="deny()">Deny</button>
+        </span>
+      </small></h3>
+      <div class="row table table-striped">
         <small></small>
         <table class="table-bordered" id="table">
           <tbody>
@@ -76,6 +76,9 @@
             </tr>
           </tbody>
         </table>
+        <!--<div class="">
+          <img id="receipt" src="">
+        </div>-->
       </div>
     </div>
     <br>
@@ -108,10 +111,10 @@
       function populate() {
         document.getElementById("id").innerHTML = currReimb.id;
         document.getElementById("amount").innerHTML = "$" + currReimb.amount;
-        document.getElementById("submitted").innerHTML = currReimb.submitted.substring(0,10);
+        document.getElementById("submitted").innerHTML = currReimb.submitted;
         let resolved = document.getElementById("resolved");
         if (currReimb.resolved != 0) {
-          resolved.innerHTML = currReimb.resolved.substring(0,10);
+          resolved.innerHTML = currReimb.resolved;
         } else {
           resolved.innerHTML = "N/A";
         }
@@ -125,6 +128,7 @@
         }
         document.getElementById("status").innerHTML = currReimb.status;
         document.getElementById("type").innerHTML = currReimb.type;
+        //document.getElementById("receipt").src = "data:image/jpg;base64," + currReimb.receipt;
       }
 
       async function approve() {

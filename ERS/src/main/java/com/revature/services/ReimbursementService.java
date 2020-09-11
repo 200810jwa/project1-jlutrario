@@ -32,8 +32,19 @@ public class ReimbursementService {
 	
 	public Reimbursement submit(ReimbursementTemplate rt) {
 		Reimbursement r = new Reimbursement(0, rt.getAmount(), LocalDateTime.now(), null, rt.getDescription(), 
-				null, rt.getAuthor(), 0, rt.getStatus_id(), rt.getType_id());
+				rt.getReceipt(), rt.getAuthor(), 0, rt.getStatus_id(), rt.getType_id());
 		
+		int new_id = reimbursementDAO.insert(r);
+		if (new_id == 0) {
+			log.info("Failed to submit reimbursement.");
+			return null;
+		}
+		r.setId(new_id);
+		
+		return r;
+	}
+	
+	public Reimbursement submit(Reimbursement r) {
 		int new_id = reimbursementDAO.insert(r);
 		if (new_id == 0) {
 			log.info("Failed to submit reimbursement.");

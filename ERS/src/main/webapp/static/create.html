@@ -10,7 +10,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: teal">
         <a class="navbar-brand" href="http://localhost:8080/ERS/home">Employee Reimbursement System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"></button>
     </nav>
     <br>
     <h2 class="container text-center">New Reimbursement Request</h2>
@@ -40,8 +39,10 @@
       <div class="row justify-content-center">
         <div class="form-group col-4">
           <br>
-          <label for="receipt">Upload Receipt</label>
-          <input type="file" class="form-control-file" id="receipt">
+          <form action="upload" method="post"> <!--enctype="multipart/form-data"-->
+            <label for="receipt">Upload Receipt</label>
+            <input type="file" class="form-control-file" name="receipt" id="receipt">
+          </form>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -55,14 +56,16 @@
         let userID = currentUser.id.value;
         let amInput = document.getElementById("amount").value;
         let dsInput = document.getElementById("description").value;
+        let rcInput = document.getElementById("receipt").value;
 
         if (amInput == null || dsInput == null || amInput == 0 || userID == 0 ||
-            amInput == "" || dsInput == "" || currentUser == null) {
+            amInput == "" || dsInput == "" || currentUser == null || rcInput == null || rcInput == "") {
             alert("Please fill in all fields");
         } else {
             create();
         }
       }
+
       async function create(e) {
         let currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
         let userID = currentUser.id;
@@ -71,10 +74,11 @@
         let tp = document.getElementById("type");
         let tpInput = tp.options[tp.selectedIndex].value;
         let dsInput = document.getElementById("description");
+        let rcInput = document.getElementById("receipt");
 
         try {
           let response = await fetch("http://localhost:8080/ERS/create/", {
-            method: 'POST',
+            method: 'PUT',
             credentials: 'include',
             body: JSON.stringify({
               amount: amInput.value,
@@ -84,15 +88,35 @@
               type_id: tpInput
             })
           });
-	
-				  //sessionStorage.setItem("reimbursement", JSON.stringify(await response.json()));
           alert("Success! Reimbursement request submitted...");
 				  window.location.href = "http://localhost:8080/ERS/profile";
+        } catch(error) {
+          console.log(error);
+          alert("Could not submit reimbursement request");
+        }
 
-          } catch(error) {
-            console.log(error);
-            alert("Could not submit reimbursement request");
+        var formData = new FormData();
+        formData.append("receipt", document.getElementById("receipt").files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:8080/ERS/create/");
+        xhr.send(formData);
+      }
+
+      function getImage(rcInput) {
+        let bytes = [];
+        if (rcInput.files) {
+          var reader = new FileReader();
+          reader.readAsArrayBuffer(rcInput.files[0]);
+          reader.onload = function() {
+            let image = reader.result;
+            let arr = new Uint8Array(image);
+            for (let i = 0; i < arr.length; i++) {
+              bytes.push(arr[i]);
+            }
           }
+        }
+        return bytes;
       }
     </script>
     <footer style="background-color: teal; color: white; padding: 10px 0; text-align: center;">
